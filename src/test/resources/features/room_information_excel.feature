@@ -6,4 +6,4 @@ Feature: room information functionality
     When user logs in using "daldie7l@seattletimes.com" and "ruthannjohnes"
     Then correct room information should be displayed for light side
 
-#    And room information should be displayed as given in ""file_path" "sheet_name"
+#    And room information should be displayed as given in "file_path" "sheetname"
