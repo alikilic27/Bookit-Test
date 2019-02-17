@@ -1,7 +1,5 @@
 package com.cybertek.utilities;
 
-import cucumber.api.java.it.Ma;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,14 +10,15 @@ public class UserUtility {
 
     /**
      * returns email and password of a user based on role and location
+     *
      * @param role
      * @param location
      * @return
      */
-    public static Map<String, String> getUserCredentials(String role, String location){
-        // read the excel file based on location and get data
+    public static Map<String, String> getUserCredentials(String role, String location) {
+        // point to the correct file path based on location argument
         String file = null;
-        switch (location){
+        switch (location) {
             case ApplicationConstants.IL:
                 file = "./src/test/resources/test_data/il-users.xlsx";
                 break;
@@ -30,14 +29,15 @@ public class UserUtility {
                 file = "./src/test/resources/test_data/light-side-users.xlsx";
                 break;
         }
-        // read the file based and get teh data
+
+        // read the file based on filepath and get the data
         List<Map<String, String>> userData = new ExcelUtil(file, "Sheet1").getDataList();
 
-        for (Map<String , String> user : userData) {
-            if (role.contains(user.get("role"))){
+        for (Map<String, String> user : userData) {
+            if (role.contains(user.get("role"))) {
                 Map<String, String> map = new HashMap<>();
                 map.put("email", user.get("email"));
-                map.put("password", user.get("first_name").toLowerCase()+user.get("last_name").toLowerCase());
+                map.put("password", user.get("first_name").toLowerCase() + user.get("last_name").toLowerCase());
                 return map;
             }
         }
@@ -45,7 +45,11 @@ public class UserUtility {
     }
 
     public static void main(String[] args) {
-        System.out.println(getUserCredentials(ApplicationConstants.TEACHER, ApplicationConstants.DARK_SIDE));
+        System.out.println(getUserCredentials( ApplicationConstants.STUDENT_TEAM_LEADER,
+                ApplicationConstants.LIGHT_SIDE));
     }
-
 }
+
+
+
+
