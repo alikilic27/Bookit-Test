@@ -1,0 +1,36 @@
+Index: src/test/java/com/cybertek/runners/CukesRunner.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.cybertek.runners;\n\n\nimport cucumber.api.CucumberOptions;\nimport cucumber.api.junit.Cucumber;\nimport org.junit.runner.RunWith;\n\n@RunWith(Cucumber.class)\n@CucumberOptions(\n        plugin = {\n             \"html:target/default-cucumber-reports\",\n              \"json:target/cucumber.json\"\n        },\n        features = {\"src/test/resources/features\"},\n        glue = \"com/cybertek/step_definitions\"\n        , dryRun = false\n        , tags = \"@wip\"\n)\npublic class CukesRunner {\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/java/com/cybertek/runners/CukesRunner.java	(revision 8ac2b258255bb7e5630b0eb5b7cebdf738d3e7b2)
++++ src/test/java/com/cybertek/runners/CukesRunner.java	(date 1551835918000)
+@@ -13,7 +13,7 @@
+         },
+         features = {"src/test/resources/features"},
+         glue = "com/cybertek/step_definitions"
+-        , dryRun = false
++        , dryRun = true
+         , tags = "@wip"
+ )
+ public class CukesRunner {
+Index: src/test/resources/features/user_roles.feature
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>Feature: User roles\n    # in the given you need to figure out a way to find out if there are any available spots\n\n  # ctrl+shift+f   ---> search in project\n\n  # ctrl+shift+r   ---> search in project\n\n@wip\n  Scenario Outline: login as <user> type\n    Given the user logs in as a light-side <user>\n    And there are available spots for scheduling\n    When the user hunts for a spot\n    Then book button <expected> be displayed\n\n    Examples:\n      | user        | expected   |\n      | team member | should not |\n      | team lead   | should     |\n      | teacher     | should     |\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/resources/features/user_roles.feature	(revision 8ac2b258255bb7e5630b0eb5b7cebdf738d3e7b2)
++++ src/test/resources/features/user_roles.feature	(date 1551835918000)
+@@ -5,7 +5,7 @@
+ 
+   # ctrl+shift+r   ---> search in project
+ 
+-@wip
++
+   Scenario Outline: login as <user> type
+     Given the user logs in as a light-side <user>
+     And there are available spots for scheduling
