@@ -15,11 +15,10 @@ public class BackendTestStepDefinitions {
         String teamName = myTeamPage.teamName.getText();
         System.out.println(teamName);
 
-        String sql = "select id from team where name = '"+teamName+"'";
-        DatabaseUtility.createConnection();
-        System.out.println(sql);
-        String id = DatabaseUtility.getCellValue(sql).toString();
-        System.out.println(id);
+        String sql = "select u.firstname || ' ' || u.lastname " +
+                " from users u join team t on t.id = " +
+                "u.team_id and t.name = '"+teamName+"';";
+
     }
 
 }
