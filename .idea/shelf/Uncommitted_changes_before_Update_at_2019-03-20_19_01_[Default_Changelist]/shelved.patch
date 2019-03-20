@@ -1,0 +1,388 @@
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_2019-03-05_21_11__Default_Changelist_.xml
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_2019-03-05_21_11__Default_Changelist_.xml	(date 1551928425000)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_2019-03-05_21_11__Default_Changelist_.xml	(date 1551928425000)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_2019-03-05_21_11_[Default_Changelist]" date="1551838325556" recycled="true" toDelete="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2019-03-05_21_11_[Default_Changelist]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 2019-03-05 21:11 [Default Changelist]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_2019-03-05_21_11_[Default_Changelist]/shelved.patch
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_2019-03-05_21_11_[Default_Changelist]/shelved.patch	(date 1551928425000)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_2019-03-05_21_11_[Default_Changelist]/shelved.patch	(date 1551928425000)
+@@ -1,373 +0,0 @@
+-Index: src/test/java/com/cybertek/utilities/DatabaseUtility.java
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- src/test/java/com/cybertek/utilities/DatabaseUtility.java	(date 1551838280000)
+-+++ src/test/java/com/cybertek/utilities/DatabaseUtility.java	(date 1551838280000)
+-@@ -0,0 +1,231 @@
+-+package com.cybertek.utilities;
+-+
+-+import java.sql.Connection;
+-+import java.sql.DriverManager;
+-+import java.sql.ResultSet;
+-+import java.sql.ResultSetMetaData;
+-+import java.sql.SQLException;
+-+import java.sql.Statement;
+-+import java.util.ArrayList;
+-+import java.util.HashMap;
+-+import java.util.List;
+-+import java.util.Map;
+-+
+-+public class DatabaseUtility {
+-+
+-+
+-+    private static Connection connection;
+-+    private static Statement statement;
+-+    private static ResultSet resultSet;
+-+
+-+
+-+    public static void createConnection() {
+-+        String url = "jdbc:postgresql://room-reservation-qa.cxvqfpt4mc2y.us-east-1.rds.amazonaws.com:5432/room_reservation_qa";
+-+        String user = "qa_user";
+-+        String password = "Cybertek11!";
+-+
+-+
+-+        try {
+-+            connection = DriverManager.getConnection(url, user, password);
+-+        } catch (SQLException e) {
+-+            // TODO Auto-generated catch block
+-+            e.printStackTrace();
+-+        }
+-+
+-+    }
+-+
+-+    public static void closeConnection() {
+-+        try {
+-+            if (resultSet != null) {
+-+                resultSet.close();
+-+            }
+-+            if (statement != null) {
+-+                statement.close();
+-+            }
+-+            if (connection != null) {
+-+                connection.close();
+-+            }
+-+
+-+        } catch (SQLException e) {
+-+            e.printStackTrace();
+-+        }
+-+
+-+    }
+-+
+-+    /**
+-+     *
+-+     * @param query
+-+     * @return returns a single cell value. If the results in multiple rows and/or
+-+     *         columns of data, only first column of the first row will be returned.
+-+     *         The rest of the data will be ignored
+-+     */
+-+    public static Object getCellValue(String query) {
+-+        return getQueryResultList(query).get(0).get(0);
+-+    }
+-+
+-+    /**
+-+     *
+-+     * @param query
+-+     * @return returns a list of Strings which represent a row of data. If the query
+-+     *         results in multiple rows and/or columns of data, only first row will
+-+     *         be returned. The rest of the data will be ignored
+-+     */
+-+    public static List<Object> getRowList(String query) {
+-+        return getQueryResultList(query).get(0);
+-+    }
+-+
+-+    /**
+-+     *
+-+     * @param query
+-+     * @return returns a map which represent a row of data where key is the column
+-+     *         name. If the query results in multiple rows and/or columns of data,
+-+     *         only first row will be returned. The rest of the data will be ignored
+-+     */
+-+    public static Map<String, Object> getRowMap(String query) {
+-+        return getQueryResultMap(query).get(0);
+-+    }
+-+
+-+    /**
+-+     *
+-+     * @param query
+-+     * @return returns query result in a list of lists where outer list represents
+-+     *         collection of rows and inner lists represent a single row
+-+     */
+-+    public static List<List<Object>> getQueryResultList(String query) {
+-+        executeQuery(query);
+-+        List<List<Object>> rowList = new ArrayList<>();
+-+        ResultSetMetaData rsmd;
+-+
+-+        try {
+-+            rsmd = resultSet.getMetaData();
+-+            while (resultSet.next()) {
+-+                List<Object> row = new ArrayList<>();
+-+                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+-+                    row.add(resultSet.getObject(i));
+-+                }
+-+
+-+                rowList.add(row);
+-+
+-+            }
+-+        } catch (SQLException e) {
+-+            // TODO Auto-generated catch block
+-+            e.printStackTrace();
+-+        }
+-+
+-+        return rowList;
+-+
+-+    }
+-+
+-+    /**
+-+     *
+-+     * @param query
+-+     * @param column
+-+     * @return list of values of a single column from the result set
+-+     */
+-+    public static List<Object> getColumnData(String query, String column) {
+-+        executeQuery(query);
+-+        List<Object> rowList = new ArrayList<>();
+-+        ResultSetMetaData rsmd;
+-+
+-+        try {
+-+            rsmd = resultSet.getMetaData();
+-+            while (resultSet.next()) {
+-+                rowList.add(resultSet.getObject(column));
+-+            }
+-+        } catch (SQLException e) {
+-+            // TODO Auto-generated catch block
+-+            e.printStackTrace();
+-+        }
+-+
+-+        return rowList;
+-+
+-+    }
+-+
+-+    /**
+-+     *
+-+     * @param query
+-+     * @return returns query result in a list of maps where the list represents
+-+     *         collection of rows and a map represents represent a single row with
+-+     *         key being the column name
+-+     */
+-+    public static List<Map<String, Object>> getQueryResultMap(String query) {
+-+        executeQuery(query);
+-+        List<Map<String, Object>> rowList = new ArrayList<>();
+-+        ResultSetMetaData rsmd;
+-+
+-+        try {
+-+            rsmd = resultSet.getMetaData();
+-+
+-+            while (resultSet.next()) {
+-+
+-+                Map<String, Object> colNameValueMap = new HashMap<>();
+-+
+-+                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+-+
+-+                    colNameValueMap.put(rsmd.getColumnName(i), resultSet.getObject(i));
+-+                }
+-+
+-+                rowList.add(colNameValueMap);
+-+
+-+            }
+-+        } catch (SQLException e) {
+-+            // TODO Auto-generated catch block
+-+            e.printStackTrace();
+-+        }
+-+
+-+        return rowList;
+-+
+-+    }
+-+
+-+    /**
+-+     *
+-+     * @param query
+-+     * @return List of columns returned in result set
+-+     */
+-+    public static List<String> getColumnNames(String query) {
+-+        executeQuery(query);
+-+        List<String> columns = new ArrayList<>();
+-+        ResultSetMetaData rsmd;
+-+
+-+        try {
+-+            rsmd = resultSet.getMetaData();
+-+            int columnCount = rsmd.getColumnCount();
+-+
+-+            for (int i = 1; i <= columnCount; i++) {
+-+                columns.add(rsmd.getColumnName(i));
+-+            }
+-+
+-+        } catch (SQLException e) {
+-+            // TODO Auto-generated catch block
+-+            e.printStackTrace();
+-+        }
+-+
+-+        return columns;
+-+
+-+    }
+-+
+-+    private static void executeQuery(String query) {
+-+        try {
+-+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+-+        } catch (SQLException e) {
+-+            // TODO Auto-generated catch block
+-+            e.printStackTrace();
+-+        }
+-+        try {
+-+            resultSet = statement.executeQuery(query);
+-+        } catch (SQLException e) {
+-+            // TODO Auto-generated catch block
+-+            e.printStackTrace();
+-+        }
+-+    }
+-+
+-+    public static int getRowCount() throws Exception {
+-+
+-+        resultSet.last();
+-+
+-+        int rowCount = resultSet.getRow();
+-+        return rowCount;
+-+
+-+    }
+-+
+-+}
+-Index: src/test/java/com/cybertek/pages/MyTeamPage.java
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>package com.cybertek.pages;\n\nimport com.cybertek.utilities.Driver;\nimport org.openqa.selenium.WebElement;\nimport org.openqa.selenium.support.FindBy;\nimport org.openqa.selenium.support.PageFactory;\n\nimport java.util.List;\n\npublic class MyTeamPage extends NavigationMenu {\n\n    @FindBy(xpath = \"//p[.='name']/../p[1]\")\n\tpublic List<WebElement> allNames;\n\n\t@FindBy(xpath = \"//p[.='role']/../p[1]\")\n\tpublic List<WebElement> allRoles;\n\n\n}\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- src/test/java/com/cybertek/pages/MyTeamPage.java	(date 1551838277000)
+-+++ src/test/java/com/cybertek/pages/MyTeamPage.java	(date 1551838280000)
+-@@ -5,6 +5,7 @@
+- import org.openqa.selenium.support.FindBy;
+- import org.openqa.selenium.support.PageFactory;
+- 
+-+import java.awt.peer.TextComponentPeer;
+- import java.util.List;
+- 
+- public class MyTeamPage extends NavigationMenu {
+-@@ -16,4 +17,6 @@
+- 	public List<WebElement> allRoles;
+- 
+- 
+-+	@FindBy(xpath = "//h1[.='team']/../h2")
+-+	public WebElement teamName;
+- }
+-Index: src/test/resources/features/user_roles.feature
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>Feature: User roles\n    # in the given you need to figure out a way to find out if there are any available spots\n\n  # ctrl+shift+f   ---> search in project\n\n  # ctrl+shift+r   ---> search in project\n\n@wip\n  Scenario Outline: login as <user> type\n    Given the user logs in as a light-side <user>\n    And there are available spots for scheduling\n    When the user hunts for a spot\n    Then book button <expected> be displayed\n\n    Examples:\n      | user        | expected   |\n      | team member | should not |\n      | team lead   | should     |\n      | teacher     | should     |\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- src/test/resources/features/user_roles.feature	(date 1551838277000)
+-+++ src/test/resources/features/user_roles.feature	(date 1551838280000)
+-@@ -5,7 +5,7 @@
+- 
+-   # ctrl+shift+r   ---> search in project
+- 
+--@wip
+-+
+-   Scenario Outline: login as <user> type
+-     Given the user logs in as a light-side <user>
+-     And there are available spots for scheduling
+-Index: src/test/java/com/cybertek/step_definitions/BackendTestStepDefinitions.java
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>package com.cybertek.step_definitions;\n\nimport cucumber.api.java.en.Then;\n\npublic class BackendTestStepDefinitions {\n\n    @Then(\"team information should match database records\")\n    public void team_information_should_match_database_records() {\n       // get the excepted data from db\n        //query which selects the people with the same team as our user\n        // get the actual from UI\n        //compare\n    }\n\n}\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- src/test/java/com/cybertek/step_definitions/BackendTestStepDefinitions.java	(date 1551838277000)
+-+++ src/test/java/com/cybertek/step_definitions/BackendTestStepDefinitions.java	(date 1551838295000)
+-@@ -1,15 +1,25 @@
+- package com.cybertek.step_definitions;
+- 
+-+import com.cybertek.pages.MyTeamPage;
+-+import com.cybertek.utilities.BrowserUtils;
+-+import com.cybertek.utilities.DatabaseUtility;
+- import cucumber.api.java.en.Then;
+- 
+- public class BackendTestStepDefinitions {
+- 
+-     @Then("team information should match database records")
+-     public void team_information_should_match_database_records() {
+--       // get the excepted data from db
+--        //query which selects the people with the same team as our user
+--        // get the actual from UI
+--        //compare
+-+
+-+        MyTeamPage myTeamPage = new MyTeamPage();
+-+        BrowserUtils.wait(3);
+-+        String teamName = myTeamPage.teamName.getText();
+-+        System.out.println(teamName);
+-+
+-+        String sql = "select id from team where name = '"+teamName+"'";
+-+        DatabaseUtility.createConnection();
+-+        System.out.println(sql);
+-+        String id = DatabaseUtility.getCellValue(sql).toString();
+-+        System.out.println(id);
+-     }
+- 
+- }
+-Index: src/test/resources/features/team_info_back_end_test.feature
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>Feature: Team information back end\n\n  @wip\n  Scenario: Team members db test\n    Given user on the login page\n    And user logs in using \"ucharlot7y@nbcnews.com\" and \"archibaldmelloy\"\n    When the user goes to the \"my team\" page\n    Then team information should match database records
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- src/test/resources/features/team_info_back_end_test.feature	(date 1551838277000)
+-+++ src/test/resources/features/team_info_back_end_test.feature	(date 1551838298000)
+-@@ -1,8 +1,8 @@
+- Feature: Team information back end
+--
+-   @wip
+-   Scenario: Team members db test
+-     Given user on the login page
+--    And user logs in using "ucharlot7y@nbcnews.com" and "archibaldmelloy"
+-+    When user logs in using "mstacey8r@imdb.com" and "skylargiblin"
+-     When the user goes to the "my team" page
+--    Then team information should match database records
+-\ No newline at end of file
+-+    Then team information should match database records
+-+
+-Index: pom.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <groupId>com.cybertek</groupId>\n    <artifactId>bookit-acceptance-tests</artifactId>\n    <version>1.0-SNAPSHOT</version>\n\n    <properties>\n        <maven.compiler.source>1.8</maven.compiler.source>\n        <maven.compiler.target>1.8</maven.compiler.target>\n    </properties>\n\n    <dependencies>\n        <dependency>\n            <groupId>io.cucumber</groupId>\n            <artifactId>cucumber-java</artifactId>\n            <version>4.2.2</version>\n        </dependency>\n\n        <dependency>\n            <groupId>io.cucumber</groupId>\n            <artifactId>cucumber-junit</artifactId>\n            <version>4.2.2</version>\n            <scope>test</scope>\n        </dependency>\n\n        <dependency>\n            <groupId>org.seleniumhq.selenium</groupId>\n            <artifactId>selenium-java</artifactId>\n            <version>3.141.59</version>\n        </dependency>\n\n        <dependency>\n            <groupId>io.github.bonigarcia</groupId>\n            <artifactId>webdrivermanager</artifactId>\n            <version>3.2.0</version>\n        </dependency>\n\n               <dependency>\n            <groupId>org.apache.poi</groupId>\n            <artifactId>poi</artifactId>\n            <version>4.0.1</version>\n        </dependency>\n\n        <dependency>\n            <groupId>org.apache.poi</groupId>\n            <artifactId>poi-ooxml</artifactId>\n            <version>4.0.1</version>\n        </dependency>\n\n    </dependencies>\n\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>org.apache.maven.plugins</groupId>\n                <artifactId>maven-surefire-plugin</artifactId>\n                <configuration>\n                    <testFailureIgnore>true</testFailureIgnore>\n\n                    <includes>\n                        <include>**/*CukesRunner.java</include>\n                    </includes>\n                </configuration>\n            </plugin>\n            <plugin>\n                <groupId>net.masterthought</groupId>\n                <artifactId>maven-cucumber-reporting</artifactId>\n                <version>4.4.0</version>\n                <executions>\n                    <execution>\n                        <id>execution</id>\n                        <phase>verify</phase>\n                        <goals>\n                            <goal>generate</goal>\n                        </goals>\n                        <configuration>\n                            <projectName>cucumber-jvm-example</projectName>\n                            <!-- output directory for the generated report -->\n                            <outputDirectory>${project.build.directory}</outputDirectory>\n                            <!-- optional, defaults to outputDirectory if not specified -->\n                            <inputDirectory>${project.build.directory}</inputDirectory>\n\n                            <jsonFiles>\n                                <!-- supports wildcard or name pattern -->\n                                <param>**/cucumber.json</param>\n                            </jsonFiles>\n                            <classificationFiles>\n                                <!-- supports wildcard or name pattern -->\n                                <param>sample.properties</param>\n                                <param>other.properties</param>\n                            </classificationFiles>\n                            <!--<parallelTesting>false</parallelTesting>-->\n                        </configuration>\n                    </execution>\n                </executions>\n            </plugin>\n        </plugins>\n    </build>\n\n\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- pom.xml	(date 1551838277000)
+-+++ pom.xml	(date 1551838280000)
+-@@ -39,7 +39,7 @@
+-             <version>3.2.0</version>
+-         </dependency>
+- 
+--               <dependency>
+-+        <dependency>
+-             <groupId>org.apache.poi</groupId>
+-             <artifactId>poi</artifactId>
+-             <version>4.0.1</version>
+-@@ -50,6 +50,12 @@
+-             <artifactId>poi-ooxml</artifactId>
+-             <version>4.0.1</version>
+-         </dependency>
+-+        <dependency>
+-+            <groupId>org.postgresql</groupId>
+-+            <artifactId>postgresql</artifactId>
+-+            <version>42.2.5</version>
+-+        </dependency>
+-+
+- 
+-     </dependencies>
+- 
