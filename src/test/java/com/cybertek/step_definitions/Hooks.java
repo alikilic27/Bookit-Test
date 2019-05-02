@@ -7,6 +7,7 @@ import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.interactions.Actions;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +19,7 @@ public class Hooks {
         Driver.getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         // you can also add maximize screen here
         Driver.getDriver().manage().window().maximize();
+
     }
 
     @After

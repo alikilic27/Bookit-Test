@@ -49,5 +49,6 @@ public class HuntPage extends NavigationMenu {
         WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 5);
         wait.until(ExpectedConditions.textToBePresentInElement(title, "free spots"));
         BrowserUtils.wait(3);
+
     }
 }
